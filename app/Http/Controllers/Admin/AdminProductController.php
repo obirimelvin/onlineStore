@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Product;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AdminProductController extends Controller
 {
@@ -29,6 +30,21 @@ class AdminProductController extends Controller
         $newProduct->setPrice($request->input('price'));
         $newProduct->setImage("game.png");
         $newProduct->save();
+
+        if ($request->hasFile('image')) {
+            $imageName = $newProduct->getId() . "." . $request->file('image')->extension();
+            Storage::disk('public')->put(
+                $imageName,
+                file_get_contents($request->file('image')->getRealPath())
+            );
+            $newProduct->setImage($imageName);
+            $newProduct->save();
+        }
+        return back();
+    }
+    public function delete($id)
+    {
+        Product::destroy($id);
         return back();
     }
 }
