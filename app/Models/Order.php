@@ -87,4 +87,8 @@ class Order extends Model
     {
         return $this->items;
     }
+    public function setItems($items)
+    {
+        $this->items = $items;
+    }
 }
